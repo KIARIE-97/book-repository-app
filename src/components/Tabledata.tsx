@@ -44,8 +44,8 @@ const Tabledata = ({books, removeBook, editBook, resetbook}: tabledataProps) => 
           <div className="func">
           <button>previous</button>
           <button>next</button>
-          </div>
-                <button onClick={() => resetbook()}>reset</button>
+          </div >
+                <button className="reset" onClick={() => resetbook()}>reset</button>
                 </div>
                
       </div>
