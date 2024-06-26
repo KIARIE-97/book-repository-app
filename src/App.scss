@@ -9,4 +9,26 @@ body{
         border: 1px solid black;
         width: 60%;
     }
+    .func{
+        display: flex;
+        flex-direction: column;
+        margin-left: 20px;
+        margin-right: 20px;
+       .two{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+       }
+        
+        button{
+            padding: 10px;
+            font-size: 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: hsl(0, 89%, 34%, 0.5);
+            color: white;
+            cursor: pointer;
+        }
+    }
 }

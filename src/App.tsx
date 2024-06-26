@@ -93,23 +93,19 @@ const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
 
 };
 //pages
-const indexOfLastBook = currentPage * booksPerPage;
-const indexOfFirstBook = indexOfLastBook - booksPerPage;
-const currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
+// const indexOfLastBook = currentPage * booksPerPage;
+// const indexOfFirstBook = indexOfLastBook - booksPerPage;
+// const currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
 const totalPages = Math.ceil(books.length / booksPerPage);
 const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
-const handlePrevious = () => {
-  if (currentPage > 1) {
-    setCurrentPage(currentPage - 1);
-  }
-};
+const handleNext = useCallback(() => {
+  setCurrentPage((prevPage) => (prevPage < totalPages ? prevPage + 1 : prevPage));
+}, [totalPages]);
 
-const handleNext = () => {
-  if (currentPage < totalPages) {
-    setCurrentPage(currentPage + 1);
-  }
-};
+const handlePrevious = useCallback(() => {
+  setCurrentPage((prevPage) => (prevPage > 1 ? prevPage - 1 : prevPage));
+}, []);
 
   
 
@@ -124,16 +120,31 @@ const handleNext = () => {
     resetbook={reset}
     />
      <div className="func">
-          <button onClick={handlePrevious} disabled={!!currentPage}>previous</button>
-          {pages.map((page) => (
-            <button key={page} onClick={() => setCurrentPage(page)}>
-              {page}
-            </button>
-          ))}
-          <button onClick={handleNext} disabled={currentPage === totalPages}>next</button>
-          </div >
-      <h2></h2>
-       
+     {/* <div>
+        {currentBooks.map((book, index) => (
+          <div key={index}>{book.bookName}</div>
+        ))}
+      </div> */}
+      <div className='two'>
+        <button onClick={handlePrevious} disabled={currentPage === 1}>
+          Previous
+        </button>
+        <button onClick={handleNext} disabled={currentPage === totalPages}>
+          Next
+        </button>
+      </div>
+      <div>
+        {pages.map((page) => (
+          <button
+            key={page}
+            onClick={() => setCurrentPage(page)}
+            disabled={currentPage === page}
+          >
+            {page}
+          </button>
+        ))}
+      </div>
+      </div>
     </>
   )
 }
