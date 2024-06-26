@@ -41,10 +41,10 @@ const Tabledata = ({books, removeBook, editBook, resetbook}: tabledataProps) => 
           </tbody>
         </table>
         <div className="footers">
-          <div className="func">
+          {/* <div className="func">
           <button>previous</button>
           <button>next</button>
-          </div >
+          </div > */}
                 <button className="reset" onClick={() => resetbook()}>reset</button>
                 </div>
                

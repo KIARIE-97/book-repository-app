@@ -5,7 +5,7 @@ interface FormProps {
   addBook: (book: { bookName: string; authorName: string; yearOfPublication: number }) => void;
 }
 
-const Form: React.FC<FormProps> = ({ addBook }) => {
+const Form: React.FC<FormProps> = ({ addBook }) => { // this component receives the addBook function as a prop
   const bookNameRef = useRef<HTMLInputElement>(null);
   const authorNameRef = useRef<HTMLInputElement>(null);
   const yearOfPublicationRef = useRef<HTMLInputElement>(null);

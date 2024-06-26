@@ -1,4 +1,4 @@
-import { useReducer,useEffect } from 'react'
+import { useReducer,useEffect, useState, useCallback } from 'react'
 import Form from './components/Form'
 import Tabledata from './components/Tabledata'
 import useLocalStorage from './hooks/useLocalStorage'
@@ -38,7 +38,7 @@ type Action = { type: 'Add_book'; book: IBook }
 | { type: 'remove_book'; id: number }
 | { type: 'edit_book'; id: number; book: IBook }
 | { type: 'reset'; initialBooks: IBook[]}
-| {type: 'search_book'; book: IBook}
+| {type: 'search_book'; book: IBook[]}
 
 const bookReducer = (state: IBook[], action: Action) => {
   switch (action.type) {
@@ -50,7 +50,8 @@ const bookReducer = (state: IBook[], action: Action) => {
       return state.map((book) =>
         book.id === action.id ? { ...book, ...action.book } : book // if the book id matches the action id, update the book with the new book details
       )
-
+    case 'search_book':
+      return state.filter((book) => book.bookName.toLowerCase().includes(action.book[0].bookName.toLowerCase()))
     case 'reset':
       return action.initialBooks
     default:
@@ -60,7 +61,9 @@ const bookReducer = (state: IBook[], action: Action) => {
 
 function App() {
   const [storedBooks, setStoredBooks] = useLocalStorage<IBook[]>('books', initialBookState)
-
+  const [searchBook, setSearchBoook] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const booksPerPage = 2;
 
  //usereducer operations of reading, updating and deleting books
   const [books, dispatch] = useReducer(bookReducer, storedBooks)
@@ -76,27 +79,59 @@ const reset = () => {
 const addBook = (book: Omit<IBook, 'id'>) => {
   dispatch({ type: 'Add_book', book: { ...book, id: 0 } }) // id will be set by the reducer
 }
+//searching book
+useEffect(() => {
+  dispatch({type: 'search_book', book: books.filter((book) => book.bookName.toLowerCase().includes(searchBook.toLowerCase()))})
+}, [searchBook])
 
 useEffect(() => {
   setStoredBooks(books) // set the todos to local storage
 }, [books, setStoredBooks]) 
 
-  // const addBook = (book: IBook) => {
-  //   dispatch({ type: 'Add_book', book: book })
-  // }
+const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+  setSearchBoook(event.target.value);
 
-  //use callback for previous and next
+};
+//pages
+const indexOfLastBook = currentPage * booksPerPage;
+const indexOfFirstBook = indexOfLastBook - booksPerPage;
+const currentBooks = books.slice(indexOfFirstBook, indexOfLastBook);
+const totalPages = Math.ceil(books.length / booksPerPage);
+const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+
+const handlePrevious = () => {
+  if (currentPage > 1) {
+    setCurrentPage(currentPage - 1);
+  }
+};
+
+const handleNext = () => {
+  if (currentPage < totalPages) {
+    setCurrentPage(currentPage + 1);
+  }
+};
+
   
 
   return (
     <>
     
     <Form addBook={addBook} />
+    <input type='text'  placeholder="Search by book name..." value={searchBook} onChange={handleSearch} /> 
     <Tabledata books={books }
     removeBook={removeBook}
     editBook={editBook}
     resetbook={reset}
     />
+     <div className="func">
+          <button onClick={handlePrevious} disabled={!!currentPage}>previous</button>
+          {pages.map((page) => (
+            <button key={page} onClick={() => setCurrentPage(page)}>
+              {page}
+            </button>
+          ))}
+          <button onClick={handleNext} disabled={currentPage === totalPages}>next</button>
+          </div >
       <h2></h2>
        
     </>
